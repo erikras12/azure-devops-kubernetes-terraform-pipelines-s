@@ -8,33 +8,38 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
+
 - task: DownloadSecureFile@1
   displayName: publickey
   inputs:
     secureFile: 'azure_rsa.pub'
 
-- task: TerraformCLI@2
-  displayName: 'terraform init'
-  inputs:
-    command: 'init'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/configuration/iaac/azure/kubernetes'
-    backendType: 'azurerm'
-    backendServiceArm: 'azure-resource-manager-service-connection'
-    backendAzureRmSubscriptionId: '09059aa9-15cd-4ad2-a4e7-864b5dc2ea35'
-    ensureBackend: true
-    backendAzureRmResourceGroupName: 'terraform-backend-rg'
-    backendAzureRmResourceGroupLocation: 'uksouth'
-    backendAzureRmStorageAccountName: 'storageaccountekrasniqi'
-    backendAzureRmContainerName: 'storageaccountekrasniqicontainer'
-    backendAzureRmKey: 'kubernetes-dev.tfstate'
-    allowTelemetryCollection: true
+- script: |
+    echo "Public Key Path: $(publickey.secureFilePath)"
+  displayName: "Debug Public Key Path"
 
-- task: TerraformCLI@2
-  displayName: 'terraform apply'
-  inputs:
-    command: 'apply'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/configuration/iaac/azure/kubernetes'
-    environmentServiceName: 'azure-resource-manager-service-connection'
-    commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath)'
-    allowTelemetryCollection: true
+# - task: TerraformCLI@2
+#   displayName: 'terraform init'
+#   inputs:
+#     command: 'init'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/configuration/iaac/azure/kubernetes'
+#     backendType: 'azurerm'
+#     backendServiceArm: 'azure-resource-manager-service-connection'
+#     backendAzureRmSubscriptionId: '09059aa9-15cd-4ad2-a4e7-864b5dc2ea35'
+#     ensureBackend: true
+#     backendAzureRmResourceGroupName: 'terraform-backend-rg'
+#     backendAzureRmResourceGroupLocation: 'uksouth'
+#     backendAzureRmStorageAccountName: 'storageaccountekrasniqi'
+#     backendAzureRmContainerName: 'storageaccountekrasniqicontainer'
+#     backendAzureRmKey: 'kubernetes-dev.tfstate'
+#     allowTelemetryCollection: true
+
+# - task: TerraformCLI@2
+#   displayName: 'terraform apply'
+#   inputs:
+#     command: 'apply'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/configuration/iaac/azure/kubernetes'
+#     environmentServiceName: 'azure-resource-manager-service-connection'
+#     commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(publickey.secureFilePath)'
+#     allowTelemetryCollection: true
 
